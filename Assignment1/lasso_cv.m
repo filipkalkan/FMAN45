@@ -24,7 +24,7 @@ SEest = zeros(K,Nlam);
 
 
 % cross-validation indexing
-randomind = NaN; % Select random indices for validation and estimation
+randomind = randperm(N); % Select random indices for validation and estimation
 location = 0; % Index start when moving through the folds
 Nval = floor(N/K); % How many samples per fold
 hop = Nval; % How many samples to skip when moving to the next fold.
@@ -32,20 +32,21 @@ hop = Nval; % How many samples to skip when moving to the next fold.
 
 for kfold = 1:K
    
-    valind = NaN; % Select validation indices
-    estind = NaN; % Select estimation indices
+    valind = randomind((kfold-1)*hop+1:kfold*hop); % Select validation indices
+    estind = randomind; % Select estimation indices
+    estind((kfold-1)*hop+1:kfold*hop) = []; % All indices that are not present in valind
     assert(isempty(intersect(valind,estind)), "There are overlapping indices in valind and estind!"); % assert empty intersection between valind and estind
     wold = zeros(M,1); % Initialize estimate for warm-starting.
     
     for klam = 1:Nlam
         
-        what = NaN % Calculate LASSO estimate on estimation indices for the current lambda-value.
+        what = lasso_ccd(t(estind), X(estind, :), lambdavec(klam), wold); % Calculate LASSO estimate on estimation indices for the current lambda-value.
         
-        SEval(kfold,klam) = NaN; % Calculate validation error for this estimate
-        SEest(kfold,klam) = NaN; % Calculate estimation error for this estimate
+        SEval(kfold,klam) = norm(t(valind) - X(valind,:) * what).^2; % Calculate validation error for this estimate
+        SEest(kfold,klam) = norm(t(estind) - X(estind,:) * what).^2; % Calculate estimation error for this estimate
         
         wold = what; % Set current estimate as old estimate for next lambda-value.
-        disp(['Fold: ' num2str(kfold) ', lambda-index: ' num2str(klam)]) % Display current fold and lambda-index.
+        disp(['Fold: ' num2str(kfold) ', lambda-index: ' num2str(klam)]); % Display current fold and lambda-index.
         
     end
     
@@ -55,14 +56,14 @@ end
 
 MSEval = mean(SEval,1); % Calculate MSE_val as mean of validation error over the folds.
 MSEest = mean(SEest,1); % Calculate MSE_est as mean of estimation error over the folds.
-lambdaopt = NaN; % Select optimal lambda 
+lambdaopt = lambdavec(MSEval == min(MSEval)); % Select optimal lambda 
 
 
 RMSEval = sqrt(MSEval);
 RMSEest = sqrt(MSEest);
 
 
-wopt = NaN % Calculate LASSO estimate for selected lambda using all data.
+wopt = lasso_ccd(t, X, lambdaopt); % Calculate LASSO estimate for selected lambda using all data.
 
 end
 
