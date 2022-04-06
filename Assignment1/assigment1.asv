@@ -51,7 +51,10 @@ non_zero_coordinates2 = sum(omega_hat2~=0); % 8
 non_zero_coordinates3 = sum(omega_hat3~=0); % 61
 
 %% Task 5
+clear;
 close all
+load A1_data.mat
+
 lambda_min = 0.01;
 lambda_max = max(abs(X'*t));
 N_lambda = 100;
@@ -62,17 +65,44 @@ lambda_grid = exp( linspace( log(lambda_min), log(lambda_max), N_lambda));
 
 t_optimal = Xinterp*wopt;
 t_data = X*wopt;
-
+%%
+legends = [];
 figure
 hold on
-scatter(log(lambda_grid), RMSEval, 'bx')
+legends = [legends scatter(log(lambda_grid), RMSEval, 'bx')];
 plot(log(lambda_grid), RMSEval, 'b')
+legends = [legends scatter(log(lambda_grid), RMSEest, 'cx')];
 plot(log(lambda_grid), RMSEest, 'c')
-xline(log(lambdaopt), 'r');
-legend('Validation RMSE', 'Estimate RMSE', 'Optimal \lambda')
+legends = [legends xline(log(lambdaopt), '--r')];
+legend(legends, 'Validation RMSE', 'Estimate RMSE', 'Optimal \lambda')
 xlabel('log(\lambda)')
 txt = strcat('\leftarrow \lambda = ', sprintf('%.1f',lambdaopt));
 text(log(lambdaopt),15,txt)
+
+omega_hat_opt = lasso_ccd(t, X, lambdaopt);
+y_hat_opt = Xinterp * omega_hat_opt;
+y_data_opt = X * omega_hat_opt;
+
+figure
+hold on
+scatter(n, t, 30, 'b')
+scatter(n, y_data_opt, 30, 'filled')
+plot(ninterp, y_hat_opt, 'r')
+legend('Real Data Points', 'Synthesized Data Points', 'Reconstruction')
+xlabel('Time')
+text(1,6,strcat('\lambda = ',sprintf('%.1f',lambdaopt)))
+
+%% TASK 6
+clear;
+close all
+load A1_data.mat
+
+lambda_min = 0.01;
+N_lambda = 100;
+nbr_folds = 10;
+frame_length = size(Xaudio, 1);
+N_fram
+lambda_max = zeros()
 
 
 

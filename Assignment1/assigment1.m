@@ -51,14 +51,17 @@ non_zero_coordinates2 = sum(omega_hat2~=0); % 8
 non_zero_coordinates3 = sum(omega_hat3~=0); % 61
 
 %% Task 5
+clear;
 close all
+load A1_data.mat
+
 lambda_min = 0.01;
 lambda_max = max(abs(X'*t));
 N_lambda = 100;
-nbr_folds = 10;
+N_folds = 10;
 
 lambda_grid = exp( linspace( log(lambda_min), log(lambda_max), N_lambda));
-[wopt, lambdaopt, RMSEval, RMSEest] = lasso_cv(t, X, lambda_grid, nbr_folds);
+[wopt, lambdaopt, RMSEval, RMSEest] = lasso_cv(t, X, lambda_grid, N_folds);
 
 t_optimal = Xinterp*wopt;
 t_data = X*wopt;
@@ -89,7 +92,26 @@ legend('Real Data Points', 'Synthesized Data Points', 'Reconstruction')
 xlabel('Time')
 text(1,6,strcat('\lambda = ',sprintf('%.1f',lambdaopt)))
 
+%% TASK 6
+clear;
+close all
+load A1_data.mat
 
+lambda_min = 0.01;
+N_lambda = 100;
+N_folds = 4;
+frame_length = size(Xaudio, 1);
+N_frames = floor(length(Ttrain)./frame_length);
+lambda_maxes = zeros(N_frames, 1);
+
+for frame_index=1:N_frames
+    lambda_maxes(frame_index) = max(abs(Xaudio'*Ttrain(1 + frame_length*(frame_index-1) : frame_index*frame_length)));
+end
+
+lambda_max = max(lambda_maxes);
+lambda_grid = exp( linspace( log(lambda_min), log(lambda_max), N_lambda));
+
+[wopt, lambdaopt, RMSEval, RMSEest] = multiframe_lasso_cv(Ttrain, Xaudio, lambda_grid, N_folds);
 
 
 
