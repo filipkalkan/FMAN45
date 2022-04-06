@@ -92,14 +92,14 @@ legend('Real Data Points', 'Synthesized Data Points', 'Reconstruction')
 xlabel('Time')
 text(1,6,strcat('\lambda = ',sprintf('%.1f',lambdaopt)))
 
-%% TASK 6
+%% TASK 6 DO NOT RUN UNLESS YOU NEED TO RECALCULATE
 clear;
 close all
 load A1_data.mat
 
-lambda_min = 0.01;
+lambda_min = 0.0005;
 N_lambda = 100;
-N_folds = 4;
+N_folds = 3;
 frame_length = size(Xaudio, 1);
 N_frames = floor(length(Ttrain)./frame_length);
 lambda_maxes = zeros(N_frames, 1);
@@ -113,6 +113,32 @@ lambda_grid = exp( linspace( log(lambda_min), log(lambda_max), N_lambda));
 
 [wopt, lambdaopt, RMSEval, RMSEest] = multiframe_lasso_cv(Ttrain, Xaudio, lambda_grid, N_folds);
 
+%% PLOTS
+load A1_data.mat
+load multiframe_results.mat
+legends = [];
+
+figure
+hold on
+legends = [legends scatter(log(lambda_grid), RMSEval, 'bx')];
+plot(log(lambda_grid), RMSEval, 'b')
+legends = [legends scatter(log(lambda_grid), RMSEest, 'cx')];
+plot(log(lambda_grid), RMSEest, 'c')
+legends = [legends xline(log(lambdaopt), '--r')];
+legend(legends, 'Validation RMSE', 'Estimate RMSE', 'Optimal \lambda')
+xlabel('log(\lambda)')
+txt = strcat('\leftarrow \lambda = ', sprintf('%.3f',lambdaopt));
+text(log(lambdaopt),0.25,txt)
+
+%% TASK 7
+clear;
+load A1_data.mat
+load multiframe_results.mat
+
+Ytest = lasso_denoise(Ttest, Xaudio, lambdaopt);
+soundsc(Ytest, fs);
+
+save('denoised_audio','Ytest','fs');
 
 
 
