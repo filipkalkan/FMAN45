@@ -112,7 +112,6 @@ lambda_max = max(lambda_maxes);
 lambda_grid = exp( linspace( log(lambda_min), log(lambda_max), N_lambda));
 
 [wopt, lambdaopt, RMSEval, RMSEest] = multiframe_lasso_cv(Ttrain, Xaudio, lambda_grid, N_folds);
-save("multiframe_results.mat", 'wopt', 'lambdaopt', "RMSEest", 'RMSEval');
 
 %% PLOTS
 load A1_data.mat
@@ -128,8 +127,8 @@ plot(log(lambda_grid), RMSEest, 'c')
 legends = [legends xline(log(lambdaopt), '--r')];
 legend(legends, 'Validation RMSE', 'Estimate RMSE', 'Optimal \lambda')
 xlabel('log(\lambda)')
-txt = strcat('\leftarrow \lambda = ', sprintf('%.4f',lambdaopt));
-text(log(lambdaopt),0.18,txt)
+txt = strcat('\leftarrow \lambda = ', sprintf('%.3f',lambdaopt));
+text(log(lambdaopt),0.25,txt)
 
 %% TASK 7
 clear;
