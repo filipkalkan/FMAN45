@@ -1,0 +1,125 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+
+\title{[FMAN45] - Assignment3}
+\author{Filip Kalkan (fi1231ka-s) }
+\date{May 2022}
+
+\begin{document}
+
+\maketitle
+
+\section{Exercise 1}
+Firstly, we simplify the equation
+\begin{equation}
+     \frac{d L}{d x_i} = \sum_{l = 1}^n \frac{d L}{d y_l} \frac{d y_l}{d x_i}
+\end{equation}
+as follows.
+\begin{equation}
+    \frac{d L}{d x_i} = \sum_{l = 1}^n \frac{d L}{d y_l} \frac{d}{d x_i} \bigg( \sum_{j = 1}^m W_{l j} x_j + b_j \bigg) = \sum_{l = 1}^n \frac{d L}{d y_l} W_{l i}
+\end{equation}
+Translating the result to apply to the entire vector $\mathbf{x}$ results in
+\begin{equation}
+    \frac{L}{d \mathbf{x}} =
+    \begin{bmatrix}
+    W_{1, 1} & W_{2, 1} & \hdots & W_{m, 1} \\
+    W_{1, 2} & W_{2, 2} & \hdots & W_{m, 2} \\
+    \vdots & \ddots & & \vdots\\
+    W_{1, n} & W_{2, n} & \hdots & W_{m, n} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+    \frac{d L}{d y_1} \\
+    \frac{d L}{d y_2} \\
+    \vdots \\
+    \frac{d L}{d y_m} \\
+    \end{bmatrix}
+    = \mathbf{W}^T \frac{d L}{d \mathbf{y}}
+\end{equation}
+
+Moving on to the equation
+\begin{equation}
+    \frac{d L}{d W_{ij}} = \sum_{l = 1}^n \frac{d L}{d y_l} \frac{d y_l}{d W_{ij}}
+\end{equation}
+we can apply similar computations.
+\begin{equation}
+    \frac{d L}{d W_{ij}} = \sum_{l = 1}^n \frac{d L}{d y_l} \frac{d}{d W_{ij}}\bigg( \sum_{k = 1}^m W_{l k} x_k + b_l\bigg) =
+\end{equation}
+\begin{equation}
+    = \sum_{l = 1}^n \frac{d L}{d y_l} \bigg( \sum_{k = 1}^m x_k \frac{d}{d W_{ij}} W_{l k} + b_l\bigg)
+\end{equation}
+Now, as $\frac{d}{d W_{ij}} W_{lk} = 1$ if $i = l$ and $j = k$ and $0$ otherwise, we can simplify the equation to
+\begin{equation}
+    \frac{d L}{d W_{ij}} = \frac{d L}{d y_i} x_j
+\end{equation}
+
+Translating the result to apply to $\mathbf{W}$ results in
+\begin{equation}
+    \frac{d L}{d \mathbf{W}} = \begin{bmatrix}
+    \frac{d L}{d y_1} \\
+    \frac{d L}{d y_2} \\
+    \vdots \\
+    \frac{d L}{d y_m} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+    x_1 & x_2 & \hdots & x_m
+    \end{bmatrix}
+    = \frac{d L}{d \mathbf{y}} \mathbf{x}^T
+\end{equation}
+
+Finally we investigate
+\begin{equation}
+    \frac{d L}{d b_i} = \sum_{l = 1}^n \frac{d L}{d y_l} \frac{d y_l}{d b_i}.
+\end{equation}
+This can be expanded as
+\begin{equation}
+    \frac{d L}{d b_i} = \sum_{l = 1}^n \frac{d L}{d y_l} \frac{d}{d b_i} \bigg( \sum_{j = 1}^m W_{l j} x_j + b_j \bigg)
+\end{equation}
+Once again $\frac{d b_j}{d b_i} = 1$ if $i = j$ and $0$ otherwise. Thus,
+\begin{equation}
+    \frac{d L}{d b_i} = \frac{d L}{d y_i}
+\end{equation}
+which, when concidering $\mathbf{b}$ translates to
+\begin{equation}
+    \frac{d L}{d \mathbf{b}} = \frac{d L}{d \mathbf{y}}
+\end{equation}
+
+\section{Exercise 2}
+In order to derive the expressions, we make use of the results from Exercise 1.
+\begin{equation}
+    \frac{d L}{d \mathbf{X}} = 
+\begin{bmatrix}
+ \mathbf{W}^T \frac{d L}{d \mathbf{y}^(1)} &
+ \mathbf{W}^T \frac{d L}{d \mathbf{y}^(2)} &
+ \hdots &
+ \mathbf{W}^T \frac{d L}{d \mathbf{y}^(N)}
+\end{bmatrix}
+= 
+\end{equation}
+\begin{equation}
+= \mathbf{W}^T
+\begin{bmatrix}
+    \frac{d L}{d \mathbf{y}^(1)} &
+    \frac{d L}{d \mathbf{y}^(2)} &
+    \hdots &
+    \frac{d L}{d \mathbf{y}^(N)}
+\end{bmatrix}
+= \mathbf{W}^T \frac{d L}{d \mathbf{Y}}
+\end{equation}
+Furthermore, we can rewrite $\mathbf{Y}$ as
+\begin{equation}
+    \mathbf{Y} = \begin{bmatrix}
+        \mathbf{W x}^(1) + \mathbf{b} &
+        \mathbf{W x}^(2) + \mathbf{b} &
+        \hdots &
+        \mathbf{W x}^(N) + \mathbf{b}
+    \end{bmatrix}
+    =
+\mathbf{W X + b}
+\end{equation}
+where $\mathbf{b}$ is added to each column of $\mathbf{W X}$.
+
+Using equation (7), we find that
+
+\end{document}
