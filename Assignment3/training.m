@@ -74,7 +74,11 @@ function net = training(net, x, labels, x_val, labels_val, opts)
                             momentum{i}.(s) = zeros(size(net.layers{i}.params.(s)));
                         end
                         
-                        error('Implement this!');
+                        momentum{i}.(s) = opts.moving_average * momentum{i}.(s)...
+                            + (1 - opts.moving_average) * (grads{i}.(s) + opts.weight_decay * net.layers{i}.params.(s));
+                        
+                        net.layers{i}.params.(s) = net.layers{i}.params.(s) - ...
+                            opts.learning_rate * momentum{i}.(s);
                     else
                         % run normal gradient descent if 
                         % the momentum parameter not is specified

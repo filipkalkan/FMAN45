@@ -52,6 +52,12 @@ function cifar10_starter()
         'padding', [2 2]);
     
     net.layers{end+1} = struct('type', 'relu');
+
+    net.layers{end+1} = struct('type', 'convolution',...
+        'params', struct('weights', 0.1*randn(5,5,16,16)/sqrt(5*5*16/2), 'biases', zeros(16,1)),...
+        'padding', [2 2]);
+    
+    net.layers{end+1} = struct('type', 'relu');
     
     net.layers{end+1} = struct('type', 'fully_connected',...
         'params', struct('weights', randn(10,4096)/sqrt(4096/2), 'biases', zeros(10,1)));
@@ -72,7 +78,7 @@ function cifar10_starter()
     % since the training takes a lot of time, consider refining rather than
     % retraining the net. Add layers to a net where the parameters already
     % are good at the other layers.
-    save('models/cifar10_baseline.mat', 'net');
+    save('models/cifar10_modified.mat', 'net');
     
     % evaluate on the test set
     pred = zeros(numel(z_test),1);

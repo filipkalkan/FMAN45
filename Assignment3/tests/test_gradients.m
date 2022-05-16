@@ -1,6 +1,6 @@
 function test_gradients(f, g, x0, epsilon, n)
     reference = g; %g(x0);
-
+    
     assert(isequal(size(x0), size(g)), 'The gradient has a different dimensionality than expected. Make sure that e.g. x and dLdx has the exact same shape.')
     
     fprintf('Gradient testing\n');
